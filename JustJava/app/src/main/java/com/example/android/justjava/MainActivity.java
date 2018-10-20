@@ -30,8 +30,13 @@ public class MainActivity extends AppCompatActivity
      */
     public void submitOrder(View view)
     {
-        display(quantity);
-        displayPrice(quantity*price);
+        String priceMessage = "Total: $" + (quantity * price);
+        priceMessage += "\nThank You!";
+
+        if( quantity > 0 )
+            displayMessage(priceMessage);
+        else
+            displayMessage("Please have a cup.");
     }
 
     /**
@@ -70,5 +75,13 @@ public class MainActivity extends AppCompatActivity
             quantity--;
 
         display(quantity);
+    }
+
+    /**
+     * This method displays the given text on the screen.
+     */
+    private void displayMessage(String message) {
+        TextView priceTextView = (TextView) findViewById(R.id.price_text_view);
+        priceTextView.setText(message);
     }
 }
