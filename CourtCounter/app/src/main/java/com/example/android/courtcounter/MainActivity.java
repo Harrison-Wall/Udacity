@@ -91,6 +91,9 @@ public class MainActivity extends AppCompatActivity
         displayForTeamB(scoreTeamB);
     }
 
+    /**
+     * Sets both score to 0.
+     */
     public void resetScores(View view)
     {
         scoreTeamA = 0;
