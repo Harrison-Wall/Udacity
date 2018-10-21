@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity
      */
     public void submitOrder(View view)
     {
-        int price = calculatePrice();
+        EditText nField = (EditText) findViewById(R.id.name_field);
+        String userName = nField.getText().toString();
 
         CheckBox whipped = (CheckBox) findViewById(R.id.whipped_box);
         boolean wantsWhipped = whipped.isChecked();
@@ -39,8 +40,7 @@ public class MainActivity extends AppCompatActivity
         CheckBox choco = (CheckBox) findViewById(R.id.choco_box);
         boolean wantsChoco = choco.isChecked();
 
-        EditText nField = (EditText) findViewById(R.id.name_field);
-        String userName = nField.getText().toString();
+        int price = calculatePrice(wantsWhipped, wantsChoco);
 
         String message = createOrderSummary(price, wantsWhipped, wantsChoco, userName);
 
@@ -91,9 +91,16 @@ public class MainActivity extends AppCompatActivity
      * Calculates the price of the order based on the current quantity.
      * @return total price
      */
-    private int calculatePrice()
+    private int calculatePrice(boolean wantsWhippedCream, boolean wantsChocolate)
     {
-        return quantity * 5;
+        int price = 5;
+
+        if(wantsChocolate)
+            price += 2;
+        if(wantsWhippedCream)
+            price++;
+
+        return quantity * price;
     }
 
     /**
