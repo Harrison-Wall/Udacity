@@ -110,14 +110,6 @@
         </LinearLayout>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Order Summary"
-            android:textAllCaps="true" />
-
-        <TextView
             android:id="@+id/order_sum_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

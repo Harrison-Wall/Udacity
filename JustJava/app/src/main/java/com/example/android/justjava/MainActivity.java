@@ -1,5 +1,7 @@
 package com.example.android.justjava;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -44,7 +46,20 @@ public class MainActivity extends AppCompatActivity
 
         String message = createOrderSummary(price, wantsWhipped, wantsChoco, userName);
 
-        displayMessage(message);
+        String[] addresses = new String[1];
+        addresses[0] = "udactyi@test.com";
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        intent.putExtra(Intent.EXTRA_SUBJECT, userName+"'s Order");
+        intent.putExtra(Intent.EXTRA_TEXT, message);
+
+        if (intent.resolveActivity(getPackageManager()) != null)
+        {
+            startActivity(intent);
+        }
+
     }
 
     /**
@@ -77,16 +92,6 @@ public class MainActivity extends AppCompatActivity
             quantity--;
 
         displayQuantity(quantity);
-    }
-
-    /**
-     * This method displays the given text on the screen.
-     * @param  message is what the TextView should say.
-     */
-    private void displayMessage(String message)
-    {
-        TextView orderSumTextView = (TextView) findViewById(R.id.order_sum_text_view);
-        orderSumTextView.setText(message);
     }
 
     /**
@@ -124,8 +129,7 @@ public class MainActivity extends AppCompatActivity
                     + "\nAdd Whipped cream? "+ wantsWhippedCream
                     + "\nAdd Chocolate? " + wantsChocolate
                     + "\nQuantity: " + quantity
-                    + "\nTotal: $" + price
-                    + "\nThank You!";
+                    + "\nTotal: $" + price;
         }
         else
             summary = "Please have a cup.";
