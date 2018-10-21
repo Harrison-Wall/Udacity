@@ -62,7 +62,9 @@ public class MainActivity extends AppCompatActivity
      */
     public void increment(View view)
     {
-        quantity++;
+        if(quantity <= 100)
+            quantity++;
+
         displayQuantity(quantity);
     }
 
@@ -88,16 +90,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Calculates the price of the order based on the current quantity.
+     * Calculates the price of the order based on quantity and topping.
+     * @param wantsWhippedCream is whether or not the user wants whipped cream topping
+     * @param wantsChocolate is whether or not the user wants chocolate topping
      * @return total price
      */
     private int calculatePrice(boolean wantsWhippedCream, boolean wantsChocolate)
     {
         int price = 5;
 
-        if(wantsChocolate)
+        if(wantsChocolate) // Chocolate is $2 extra
             price += 2;
-        if(wantsWhippedCream)
+        if(wantsWhippedCream) // Whipped Cream is $1 extra
             price++;
 
         return quantity * price;
