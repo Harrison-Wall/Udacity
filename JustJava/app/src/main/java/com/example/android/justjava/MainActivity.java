@@ -31,9 +31,14 @@ public class MainActivity extends AppCompatActivity
     public void submitOrder(View view)
     {
         int price = calculatePrice();
-        boolean whippedCream = checkState();
 
-        String message = createOrderSummary(price, whippedCream);
+        CheckBox whipped = (CheckBox) findViewById(R.id.whipped_box);
+        boolean wantsWhipped = whipped.isChecked();
+
+        CheckBox choco = (CheckBox) findViewById(R.id.choco_box);
+        boolean wantsChoco = choco.isChecked();
+
+        String message = createOrderSummary(price, wantsWhipped, wantsChoco);
 
         displayMessage(message);
     }
@@ -90,15 +95,18 @@ public class MainActivity extends AppCompatActivity
     /**
      * Builds a string of the order's information
      * @param price the cost of a cup of coffee
+     * @param wantsWhippedCream is whether or not the user wants whipped cream topping
+     * @param wantsChocolate is whether or not the user wants chocolate topping
      * @return order details
      */
-    private String createOrderSummary(int price, boolean wantsWhippedCream)
+    private String createOrderSummary(int price, boolean wantsWhippedCream, boolean wantsChocolate)
     {
         String summary;
 
         if( quantity > 0 )
         {
             summary = "Name: FirstName LastName\nAdd Whipped cream? "+ wantsWhippedCream
+                    + "\nAdd Chocolate? " + wantsChocolate
                     + "\nQuantity: " + quantity
                     + "\nTotal: $" + price
                     + "\nThank You!";
@@ -109,13 +117,4 @@ public class MainActivity extends AppCompatActivity
         return summary;
     }
 
-    /**
-     * Checks if the checkbox has been checked. (lol)
-     * @return isChecked()
-     */
-    private boolean checkState()
-    {
-        CheckBox whipped = (CheckBox) findViewById(R.id.whipped_box);
-        return whipped.isChecked();
-    }
 }
