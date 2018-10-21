@@ -12,17 +12,17 @@ import java.text.NumberFormat;
  */
 public class MainActivity extends AppCompatActivity
 {
+    /**
+     * Global variables for the number of Coffees and their price
+     */
+    int quantity = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-
-    /**
-     * Global variables for the number of Coffees and their price
-     */
-    int quantity = 2;
 
     /**
      * This method is called when the order button is clicked.
