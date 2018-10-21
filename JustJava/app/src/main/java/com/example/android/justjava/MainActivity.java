@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
      */
     public void increment(View view)
     {
-        if(quantity <= 100)
+        if(quantity < 100)
             quantity++;
 
         displayQuantity(quantity);
