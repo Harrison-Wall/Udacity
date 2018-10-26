@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.example.android.miwok.R;
 
+import java.util.ArrayList;
+
 public class NumbersActivity extends AppCompatActivity
 {
 
@@ -15,8 +17,17 @@ public class NumbersActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_numbers);
 
-
-        String[] words = {"One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"};
+        ArrayList<String> words = new ArrayList<String>();
+        words.add("One");
+        words.add("Two");
+        words.add("Three");
+        words.add("Four");
+        words.add("Five");
+        words.add("Six");
+        words.add("Seven");
+        words.add("Eight");
+        words.add("Nine");
+        words.add("Ten");
 
 
     }
