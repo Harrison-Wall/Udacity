@@ -11,6 +11,14 @@ import java.util.ArrayList;
 public class FamilyActivity extends AppCompatActivity
 {
     private MediaPlayer musicBox;
+    private MediaPlayer.OnCompletionListener  mListener =  new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer)
+        {
+            // Free Resources if needed
+            releaseMediaPlayer();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,11 +55,39 @@ public class FamilyActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
+                // Free Resources if needed
+                releaseMediaPlayer();
+
                 // Create the media player
                 musicBox = MediaPlayer.create(FamilyActivity.this, words.get(i).getmRawResID() ); //use the position (i) to play the file associated with the word.
                 musicBox.start();
+
+                musicBox.setOnCompletionListener(mListener);
+
             }
         });
 
+    }
+
+    // Free resources when activity is stopped.
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        releaseMediaPlayer();
+    }
+
+    /**
+     * Clean up the media player by releasing its resources.
+     */
+    private void releaseMediaPlayer() {
+        // If the media player is not null, then it may be currently playing a sound.
+        if (musicBox != null) {
+            // Regardless of the current state of the media player, release its resources
+            musicBox.release();
+
+            // Set the media player back to null.
+            musicBox = null;
+        }
     }
 }
