@@ -31,5 +31,5 @@
             android:id="@+id/default_list_text"
             tools:text="One" />
     </LinearLayout>
-    
+
 </LinearLayout>

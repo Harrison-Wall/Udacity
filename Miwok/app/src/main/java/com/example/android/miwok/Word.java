@@ -7,17 +7,26 @@ package com.example.android.miwok;
 public class Word
 {
     private String mDefaultTrans, mMiwokTrans;
+    private int mImageResID;
 
     public Word()
     {
         mDefaultTrans = "English";
         mMiwokTrans = "Miwok";
+        mImageResID = 0;
     }
 
     public Word(String def, String miw)
     {
         mDefaultTrans = def;
         mMiwokTrans = miw;
+    }
+
+    public Word(String def, String miw, int iID)
+    {
+        mDefaultTrans = def;
+        mMiwokTrans = miw;
+        mImageResID = iID;
     }
 
     /**
@@ -35,4 +44,9 @@ public class Word
     {
         return mMiwokTrans;
     }
+
+    /**
+     * @return the id of the image
+     */
+    public int getImageID() { return mImageResID; }
 }
