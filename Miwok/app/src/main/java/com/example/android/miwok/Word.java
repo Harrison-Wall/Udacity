@@ -7,15 +7,17 @@ package com.example.android.miwok;
 public class Word
 {
     private String mDefaultTrans, mMiwokTrans;
-    private int mImageResID;
+    private int mImageResID, mRawResID;
 
     private final int NO_IMAGE_PROVIDED = -1;
+    private final int NO_RAW_PROVIDED = -1;
 
     public Word()
     {
         mDefaultTrans = "English";
         mMiwokTrans = "Miwok";
         mImageResID = NO_IMAGE_PROVIDED;
+        mRawResID = NO_RAW_PROVIDED;
     }
 
     public Word(String def, String miw)
@@ -23,6 +25,7 @@ public class Word
         mDefaultTrans = def;
         mMiwokTrans = miw;
         mImageResID = NO_IMAGE_PROVIDED;
+        mRawResID = NO_RAW_PROVIDED;
     }
 
     public Word(String def, String miw, int iID)
@@ -30,6 +33,15 @@ public class Word
         mDefaultTrans = def;
         mMiwokTrans = miw;
         mImageResID = iID;
+        mRawResID = NO_RAW_PROVIDED;
+    }
+
+    public Word(String def, String miw, int iID, int rID)
+    {
+        mDefaultTrans = def;
+        mMiwokTrans = miw;
+        mImageResID = iID;
+        mRawResID = rID;
     }
 
     /**
@@ -59,5 +71,14 @@ public class Word
     boolean hasImage()
     {
         return mImageResID != NO_IMAGE_PROVIDED;
+    }
+
+    /**
+     *
+     * @return the resource id for the audio file
+     */
+    public int getmRawResID()
+    {
+        return mRawResID;
     }
 }
