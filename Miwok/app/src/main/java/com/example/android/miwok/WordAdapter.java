@@ -62,7 +62,14 @@ public class WordAdapter extends ArrayAdapter <Word>
 
         // Find the ImageView
         ImageView iconView = (ImageView) listItemView.findViewById(R.id.image);
-        iconView.setImageResource(currentWord.getImageID());
+
+        if( currentWord.hasImage() ) // If no associate image. hide it from the view
+        {
+            iconView.setImageResource(currentWord.getImageID());
+            iconView.setVisibility(View.VISIBLE);
+        }
+        else
+            iconView.setVisibility(View.GONE);
 
         return listItemView;
     }

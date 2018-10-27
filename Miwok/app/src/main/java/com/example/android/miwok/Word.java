@@ -9,17 +9,20 @@ public class Word
     private String mDefaultTrans, mMiwokTrans;
     private int mImageResID;
 
+    private final int NO_IMAGE_PROVIDED = -1;
+
     public Word()
     {
         mDefaultTrans = "English";
         mMiwokTrans = "Miwok";
-        mImageResID = 0;
+        mImageResID = NO_IMAGE_PROVIDED;
     }
 
     public Word(String def, String miw)
     {
         mDefaultTrans = def;
         mMiwokTrans = miw;
+        mImageResID = NO_IMAGE_PROVIDED;
     }
 
     public Word(String def, String miw, int iID)
@@ -49,4 +52,12 @@ public class Word
      * @return the id of the image
      */
     public int getImageID() { return mImageResID; }
+
+    /**
+     * @return if the word has an associated image
+     */
+    boolean hasImage()
+    {
+        return mImageResID != NO_IMAGE_PROVIDED;
+    }
 }
