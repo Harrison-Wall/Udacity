@@ -61,8 +61,8 @@ public class WordAdapter extends ArrayAdapter <Word>
         defaultTextView.setText(currentWord.getDefaultTranslation());
 
         // Find the ImageView
-        //ImageView iconView = (ImageView) listItemView.findViewById(R.id.list_item_icon);
-        //iconView.setImageResource(currentWord.getImageResourceId());
+        ImageView iconView = (ImageView) listItemView.findViewById(R.id.image);
+        iconView.setImageResource(currentWord.getImageID());
 
         return listItemView;
     }
