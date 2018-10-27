@@ -2,7 +2,6 @@ package com.example.android.miwok;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import java.util.ArrayList;
 
@@ -12,9 +11,9 @@ public class NumbersActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_numbers);
+        setContentView(R.layout.word_list);
 
-        // Create the english list of numbers
+        // Create the list of numbers
         ArrayList<Word> words = new ArrayList<Word>();
 
         words.add(new Word("One", "Lutti"));
@@ -32,7 +31,7 @@ public class NumbersActivity extends AppCompatActivity
         WordAdapter itemsAdapter = new WordAdapter(this, words);
 
         // Get the numbers list layout
-        ListView listView = (ListView) findViewById(R.id.list);
+        ListView listView = (ListView) findViewById(R.id.word_list);
 
         // Add the list to the layout
         listView.setAdapter(itemsAdapter);
