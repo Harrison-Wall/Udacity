@@ -29,7 +29,7 @@ public class PhrasesActivity extends AppCompatActivity {
 
 
         // Make a list item view from the words ArrayList
-        WordAdapter itemsAdapter = new WordAdapter(this, words);
+        WordAdapter itemsAdapter = new WordAdapter(this, words, R.color.category_phrases);
 
         // Get the family list layout
         ListView listView = (ListView) findViewById(R.id.word_list);

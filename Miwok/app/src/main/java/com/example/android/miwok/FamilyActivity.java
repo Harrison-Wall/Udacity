@@ -28,7 +28,7 @@ public class FamilyActivity extends AppCompatActivity
         words.add(new Word("Grandfather", "paapa", R.drawable.family_grandfather));
 
         // Make a list item view from the words ArrayList
-        WordAdapter itemsAdapter = new WordAdapter(this, words);
+        WordAdapter itemsAdapter = new WordAdapter(this, words, R.color.category_family);
 
         // Get the family list layout
         ListView listView = (ListView) findViewById(R.id.word_list);
