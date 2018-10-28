@@ -3,14 +3,21 @@ package com.example.android.miwok;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 
-public class NumbersActivity extends AppCompatActivity
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class NumbersFragment extends Fragment
 {
     /**Handles playback of all files**/
     private MediaPlayer musicBox;
@@ -24,6 +31,9 @@ public class NumbersActivity extends AppCompatActivity
             releaseMediaPlayer();
         }
     };
+
+    /**Handles audio focus when playing sound.**/
+    private AudioManager mAudioManager;
 
     // Listener is called on when {@link AudioManager} focus changes.
     AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener()
@@ -50,17 +60,30 @@ public class NumbersActivity extends AppCompatActivity
         }
     };
 
-    /**Handles audio focus when playing sound.**/
-    private AudioManager mAudioManager;
+    /**
+     * This listener gets triggered when the {@link MediaPlayer} has completed
+     */
+    private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener()
+    {
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer)
+        {
+            releaseMediaPlayer();
+        }
+    };
+
+    public NumbersFragment()
+    {
+        // Required empty public constructor
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
 
         // set up the {@link AudioManager} to request audio focus
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
         // Create the list of numbers
         final ArrayList<Word> words = new ArrayList<Word>(); // Must be final to use in listView
@@ -77,10 +100,10 @@ public class NumbersActivity extends AppCompatActivity
         words.add(new Word("Ten", "na'aacha", R.drawable.number_ten, R.raw.number_ten));
 
         // Make a list item view from the words ArrayList
-        WordAdapter itemsAdapter = new WordAdapter(this, words, R.color.category_numbers);
+        WordAdapter itemsAdapter = new WordAdapter(getActivity(), words, R.color.category_numbers);
 
         // Get the numbers list layout
-        final ListView listView = (ListView) findViewById(R.id.word_list);
+        final ListView listView = (ListView) rootView.findViewById(R.id.word_list);
 
         // Add the list to the layout
         listView.setAdapter(itemsAdapter);
@@ -104,7 +127,7 @@ public class NumbersActivity extends AppCompatActivity
                 // Check if the audio manager got the focus
                 if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 {
-                    musicBox = MediaPlayer.create(NumbersActivity.this, words.get(i).getmRawResID() ); //use the position (i) to play the file associated with the word.
+                    musicBox = MediaPlayer.create(getActivity(), words.get(i).getmRawResID() ); //use the position (i) to play the file associated with the word.
                     musicBox.start();
 
                     // Setup a listener on the media player, so that we can stop and release the
@@ -114,11 +137,11 @@ public class NumbersActivity extends AppCompatActivity
             }
         });
 
+        return rootView;
     }
 
-    // Free resources when activity is stopped.
     @Override
-    protected void onStop()
+    public void onStop()
     {
         super.onStop();
         releaseMediaPlayer();

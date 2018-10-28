@@ -3,14 +3,16 @@ package com.example.android.miwok;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import java.util.ArrayList;
 
-public class FamilyActivity extends AppCompatActivity
+public class ColorsFragment extends Fragment
 {
     /**Handles playback of all files**/
     private MediaPlayer musicBox;
@@ -24,6 +26,9 @@ public class FamilyActivity extends AppCompatActivity
             releaseMediaPlayer();
         }
     };
+
+    /**Handles audio focus when playing sound.**/
+    private AudioManager mAudioManager;
 
     // Listener is called on when {@link AudioManager} focus changes.
     AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener()
@@ -50,37 +55,47 @@ public class FamilyActivity extends AppCompatActivity
         }
     };
 
-    /**Handles audio focus when playing sound.**/
-    private AudioManager mAudioManager;
+    /**
+     * This listener gets triggered when the {@link MediaPlayer} has completed
+     */
+    private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener()
+    {
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer)
+        {
+            releaseMediaPlayer();
+        }
+    };
+
+    public ColorsFragment()
+    {
+        // Required empty public constructor
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
 
         // set up the {@link AudioManager} to request audio focus
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-        // Create the list of family members
+        // Create the list of colors
         final ArrayList<Word> words = new ArrayList<Word>();
-
-        words.add(new Word("Father", "әpә", R.drawable.family_father, R.raw.family_father));
-        words.add(new Word("Mother", "әṭa" ,R.drawable.family_mother, R.raw.family_mother));
-        words.add(new Word("Son", "angsi", R.drawable.family_son, R.raw.family_son));
-        words.add(new Word("Daughter", "tune", R.drawable.family_daughter, R.raw.family_daughter));
-        words.add(new Word("Older Brother", "taachi", R.drawable.family_older_brother, R.raw.family_older_brother));
-        words.add(new Word("Younger Brother", "chalitti", R.drawable.family_younger_brother, R.raw.family_younger_brother));
-        words.add(new Word("Older Sister", "teṭe", R.drawable.family_older_sister, R.raw.family_older_sister));
-        words.add(new Word("Younger Sister", "kolliti", R.drawable.family_younger_sister, R.raw.family_younger_sister));
-        words.add(new Word("Grandmother", "ama", R.drawable.family_grandmother, R.raw.family_grandmother));
-        words.add(new Word("Grandfather", "paapa", R.drawable.family_grandfather, R.raw.family_grandfather));
+        words.add(new Word("Red", "weṭeṭṭi", R.drawable.color_red, R.raw.color_red));
+        words.add(new Word("Green", "chokokki", R.drawable.color_green, R.raw.color_green));
+        words.add(new Word("Brown", "ṭakaakki", R.drawable.color_brown, R.raw.color_brown));
+        words.add(new Word("Gray", "ṭopoppi", R.drawable.color_gray, R.raw.color_gray));
+        words.add(new Word("Black", "kululli", R.drawable.color_black, R.raw.color_black));
+        words.add(new Word("White", "kelelli", R.drawable.color_white, R.raw.color_white));
+        words.add(new Word("Dusty Yellow", "ṭopiisә", R.drawable.color_dusty_yellow, R.raw.color_dusty_yellow));
+        words.add(new Word("Mustard Yellow", "chiwiiṭә", R.drawable.color_mustard_yellow, R.raw.color_mustard_yellow));
 
         // Make a list item view from the words ArrayList
-        WordAdapter itemsAdapter = new WordAdapter(this, words, R.color.category_family);
+        WordAdapter itemsAdapter = new WordAdapter(getActivity(), words, R.color.category_colors);
 
-        // Get the family list layout
-        ListView listView = (ListView) findViewById(R.id.word_list);
+        // Get the numbers list layout
+        final ListView listView = (ListView) rootView.findViewById(R.id.word_list);
 
         // Add the list to the layout
         listView.setAdapter(itemsAdapter);
@@ -104,7 +119,7 @@ public class FamilyActivity extends AppCompatActivity
                 // Check if the audio manager got the focus
                 if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 {
-                    musicBox = MediaPlayer.create(FamilyActivity.this, words.get(i).getmRawResID() ); //use the position (i) to play the file associated with the word.
+                    musicBox = MediaPlayer.create(getActivity(), words.get(i).getmRawResID() ); //use the position (i) to play the file associated with the word.
                     musicBox.start();
 
                     // Setup a listener on the media player, so that we can stop and release the
@@ -113,11 +128,12 @@ public class FamilyActivity extends AppCompatActivity
                 }
             }
         });
+
+        return rootView;
     }
 
-    // Free resources when activity is stopped.
     @Override
-    protected void onStop()
+    public void onStop()
     {
         super.onStop();
         releaseMediaPlayer();
@@ -126,7 +142,8 @@ public class FamilyActivity extends AppCompatActivity
     /**
      * Clean up the media player by releasing its resources.
      */
-    private void releaseMediaPlayer() {
+    private void releaseMediaPlayer()
+    {
         // If the media player is not null, then it may be currently playing a sound.
         if (musicBox != null) {
             // Regardless of the current state of the media player, release its resources
@@ -138,6 +155,5 @@ public class FamilyActivity extends AppCompatActivity
             // Abandon all focus, release listener.
             mAudioManager.abandonAudioFocus(mOnAudioFocusChangeListener);
         }
-
     }
 }

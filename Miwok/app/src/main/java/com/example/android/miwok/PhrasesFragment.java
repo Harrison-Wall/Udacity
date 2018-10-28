@@ -3,15 +3,17 @@ package com.example.android.miwok;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import java.util.ArrayList;
 
-public class PhrasesActivity extends AppCompatActivity {
-
+public class PhrasesFragment extends Fragment
+{
     /**Handles playback of all files**/
     private MediaPlayer musicBox;
 
@@ -24,6 +26,9 @@ public class PhrasesActivity extends AppCompatActivity {
             releaseMediaPlayer();
         }
     };
+
+    /**Handles audio focus when playing sound.**/
+    private AudioManager mAudioManager;
 
     // Listener is called on when {@link AudioManager} focus changes.
     AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener()
@@ -50,21 +55,33 @@ public class PhrasesActivity extends AppCompatActivity {
         }
     };
 
-    /**Handles audio focus when playing sound.**/
-    private AudioManager mAudioManager;
+    /**
+     * This listener gets triggered when the {@link MediaPlayer} has completed
+     */
+    private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener()
+    {
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer)
+        {
+            releaseMediaPlayer();
+        }
+    };
+
+    public PhrasesFragment()
+    {
+        // Required empty public constructor
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
 
         // set up the {@link AudioManager} to request audio focus
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
         // Create the list of family members
         final ArrayList<Word> words = new ArrayList<Word>();
-
         words.add(new Word("Where are you going?", "minto wuksus", -1, R.raw.phrase_where_are_you_going));
         words.add(new Word("What is your name?", "tinnә oyaase'nә", -1, R.raw.phrase_what_is_your_name));
         words.add(new Word("My name is...", "oyaaset...", -1, R.raw.phrase_my_name_is));
@@ -76,12 +93,11 @@ public class PhrasesActivity extends AppCompatActivity {
         words.add(new Word("Let’s go.", "yoowutis", -1, R.raw.phrase_lets_go));
         words.add(new Word("Come here.", "әnni'nem", -1, R.raw.phrase_come_here));
 
-
         // Make a list item view from the words ArrayList
-        WordAdapter itemsAdapter = new WordAdapter(this, words, R.color.category_phrases);
+        WordAdapter itemsAdapter = new WordAdapter(getActivity(), words, R.color.category_phrases);
 
-        // Get the family list layout
-        ListView listView = (ListView) findViewById(R.id.word_list);
+        // Get the numbers list layout
+        final ListView listView = (ListView) rootView.findViewById(R.id.word_list);
 
         // Add the list to the layout
         listView.setAdapter(itemsAdapter);
@@ -105,7 +121,7 @@ public class PhrasesActivity extends AppCompatActivity {
                 // Check if the audio manager got the focus
                 if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
                 {
-                    musicBox = MediaPlayer.create(PhrasesActivity.this, words.get(i).getmRawResID() ); //use the position (i) to play the file associated with the word.
+                    musicBox = MediaPlayer.create(getActivity(), words.get(i).getmRawResID() ); //use the position (i) to play the file associated with the word.
                     musicBox.start();
 
                     // Setup a listener on the media player, so that we can stop and release the
@@ -114,11 +130,12 @@ public class PhrasesActivity extends AppCompatActivity {
                 }
             }
         });
+
+        return rootView;
     }
 
-    // Free resources when activity is stopped.
     @Override
-    protected void onStop()
+    public void onStop()
     {
         super.onStop();
         releaseMediaPlayer();
@@ -127,7 +144,8 @@ public class PhrasesActivity extends AppCompatActivity {
     /**
      * Clean up the media player by releasing its resources.
      */
-    private void releaseMediaPlayer() {
+    private void releaseMediaPlayer()
+    {
         // If the media player is not null, then it may be currently playing a sound.
         if (musicBox != null) {
             // Regardless of the current state of the media player, release its resources
@@ -139,6 +157,5 @@ public class PhrasesActivity extends AppCompatActivity {
             // Abandon all focus, release listener.
             mAudioManager.abandonAudioFocus(mOnAudioFocusChangeListener);
         }
-
     }
 }
