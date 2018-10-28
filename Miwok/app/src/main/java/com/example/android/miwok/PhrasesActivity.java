@@ -1,5 +1,7 @@
 package com.example.android.miwok;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +12,10 @@ import java.util.ArrayList;
 
 public class PhrasesActivity extends AppCompatActivity {
 
+    /**Handles playback of all files**/
     private MediaPlayer musicBox;
+
+    /**Handles when to release media resources**/
     private MediaPlayer.OnCompletionListener  mListener =  new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer)
@@ -20,11 +25,42 @@ public class PhrasesActivity extends AppCompatActivity {
         }
     };
 
+    // Listener is called on when {@link AudioManager} focus changes.
+    AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener()
+    {
+        public void onAudioFocusChange(int focusChange)
+        {
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT || focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK)
+            {
+                // Pause playback and reset player to the start of the file.
+                musicBox.pause();
+                musicBox.seekTo(0);
+            }
+            else if (focusChange == AudioManager.AUDIOFOCUS_LOSS)
+            {
+                // Stop playback, because you lost the Audio Focus. Release unneeded resources.
+                musicBox.stop();
+                releaseMediaPlayer();
+            }
+            else if (focusChange == AudioManager.AUDIOFOCUS_GAIN)
+            {
+                // Resume playback.
+                musicBox.start();
+            }
+        }
+    };
+
+    /**Handles audio focus when playing sound.**/
+    private AudioManager mAudioManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.word_list);
+
+        // set up the {@link AudioManager} to request audio focus
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         // Create the list of family members
         final ArrayList<Word> words = new ArrayList<Word>();
@@ -59,12 +95,23 @@ public class PhrasesActivity extends AppCompatActivity {
                 // Free Resources if needed
                 releaseMediaPlayer();
 
-                // Create the media player
-                musicBox = MediaPlayer.create(PhrasesActivity.this, words.get(i).getmRawResID() ); //use the position (i) to play the file associated with the word.
-                musicBox.start();
+                // Request audio focus for playback
+                int result = mAudioManager.requestAudioFocus(mOnAudioFocusChangeListener,
+                        // Use the music stream.
+                        AudioManager.STREAM_MUSIC,
+                        // Request permanent focus.
+                        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
-                musicBox.setOnCompletionListener(mListener);
+                // Check if the audio manager got the focus
+                if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
+                {
+                    musicBox = MediaPlayer.create(PhrasesActivity.this, words.get(i).getmRawResID() ); //use the position (i) to play the file associated with the word.
+                    musicBox.start();
 
+                    // Setup a listener on the media player, so that we can stop and release the
+                    // media player once the sound has finished playing.
+                    musicBox.setOnCompletionListener(mListener);
+                }
             }
         });
     }
@@ -88,6 +135,10 @@ public class PhrasesActivity extends AppCompatActivity {
 
             // Set the media player back to null.
             musicBox = null;
+
+            // Abandon all focus, release listener.
+            mAudioManager.abandonAudioFocus(mOnAudioFocusChangeListener);
         }
+
     }
 }
