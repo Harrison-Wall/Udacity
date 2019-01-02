@@ -36,7 +36,7 @@ public class Earthquake
     public String getDate()
     {
         if( mDate != null )
-            return String.format("%1$tB %1$td, %1$tY", mDate);
+            return String.format("%1$tb %1$td, %1$tY", mDate);
         else
             return "Date Not Set";
     }
