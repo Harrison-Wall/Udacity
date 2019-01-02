@@ -5,17 +5,17 @@ import java.util.Date;
 public class Earthquake
 {
     private String mLocation;
-    private float mMag;
+    private double mMag;
     private Date mDate;
 
     public Earthquake()
     {
         mLocation = "Not Set";
-        mMag = 0.0f;
+        mMag = 0.0;
         mDate = null;
     }
 
-    public Earthquake(String pLocation, float pMag, int pMilli)
+    public Earthquake(String pLocation, double pMag, int pMilli)
     {
         mLocation = pLocation;
         mMag = pMag;
@@ -28,7 +28,7 @@ public class Earthquake
         return mLocation;
     }
 
-    public float getMag()
+    public double getMag()
     {
         return mMag;
     }

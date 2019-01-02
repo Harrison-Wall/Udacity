@@ -38,7 +38,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake>
 
         TextView numberTextView = (TextView) listItemView.findViewById(R.id.eq_mag);
         numberTextView.setText("" + currentAndroidFlavor.getMag() );
-        
+
         TextView iconView = (TextView) listItemView.findViewById(R.id.eq_date);
         iconView.setText(currentAndroidFlavor.getDate());
 
