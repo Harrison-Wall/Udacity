@@ -35,7 +35,10 @@ public class Earthquake
 
     public String getDate()
     {
-        return String.format("%1$tB %1$td, %1$tY", mDate);
+        if( mDate != null )
+            return String.format("%1$tB %1$td, %1$tY", mDate);
+        else
+            return "Date Not Set";
     }
 
     // Setters
@@ -53,7 +56,11 @@ public class Earthquake
 
     public void setDate(int pMilli)
     {
-        mDate.setTime(pMilli);
+        if( mDate != null )
+            mDate.setTime(pMilli);
+        else
+            mDate = new Date(pMilli);
+
         return;
     }
 }
