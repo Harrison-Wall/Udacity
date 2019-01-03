@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Earthquake
 {
-    private String mLocation;
+    private String mLocation, mURL;
     private double mMag;
     private Date mDate;
 
@@ -15,11 +15,12 @@ public class Earthquake
         mDate = null;
     }
 
-    public Earthquake(String pLocation, double pMag, long pMilli)
+    public Earthquake(String pLocation, double pMag, long pMilli, String pURL)
     {
         mLocation = pLocation;
         mMag = pMag;
         mDate = new Date(pMilli);
+        mURL = pURL;
     }
 
     // Getters
@@ -32,6 +33,8 @@ public class Earthquake
     {
         return mMag;
     }
+
+    public String getURL() { return mURL; }
 
     public String getDate()
     {

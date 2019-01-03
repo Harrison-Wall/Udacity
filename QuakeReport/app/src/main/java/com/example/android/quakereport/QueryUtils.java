@@ -39,7 +39,7 @@ public final class QueryUtils
     {
         ArrayList<Earthquake> earthquakes = new ArrayList<>();
         double tempMag;
-        String tempLoc;
+        String tempLoc, tempURL;
         long tempTime;
 
         try
@@ -56,8 +56,9 @@ public final class QueryUtils
                 tempMag  = Double.parseDouble( quakeObj.optString("mag") );
                 tempLoc  = quakeObj.optString("place");
                 tempTime = Long.parseLong( quakeObj.optString("time") );
+                tempURL = quakeObj.optString("url");
 
-                earthquakes.add( new Earthquake( tempLoc, tempMag, tempTime ) );
+                earthquakes.add( new Earthquake( tempLoc, tempMag, tempTime, tempURL ) );
             }
 
         }
