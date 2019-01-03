@@ -41,6 +41,14 @@ public class Earthquake
             return "Date Not Set";
     }
 
+    public String getTime()
+    {
+        if( mDate != null )
+            return String.format("%1$tr", mDate);
+        else
+            return "Date Not Set";
+    }
+
     // Setters
     public void setLocation(String pLocation)
     {

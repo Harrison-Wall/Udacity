@@ -19,12 +19,25 @@
         android:layout_weight="2"
         android:text="Location"/>
 
-    <TextView
-        android:id="@+id/eq_date"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:text="Date"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/eq_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"/>
+
+        <TextView
+            android:id="@+id/eq_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3:45 P.M."/>
+
+    </LinearLayout>
     
 
 </LinearLayout>
