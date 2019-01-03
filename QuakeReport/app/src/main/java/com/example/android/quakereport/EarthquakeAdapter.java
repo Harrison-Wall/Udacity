@@ -33,14 +33,22 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake>
         // Get the object located at this position in the list
         Earthquake currentAndroidFlavor = getItem(position);
 
-        TextView nameTextView = (TextView) listItemView.findViewById(R.id.eq_loc);
-        nameTextView.setText(currentAndroidFlavor.getLocation());
+        TextView locTextView = (TextView) listItemView.findViewById(R.id.eq_loc);
+        TextView distTextView = (TextView) listItemView.findViewById(R.id.eq_loc);
 
-        TextView numberTextView = (TextView) listItemView.findViewById(R.id.eq_mag);
-        numberTextView.setText("" + currentAndroidFlavor.getMag() );
+        String locParts[] = currentAndroidFlavor.getLocation().split("of ");
+
+        distTextView.setText(locParts[0]+"OF");
+        locTextView.setText(locParts[1]);
+
+
+        TextView magTextView = (TextView) listItemView.findViewById(R.id.eq_mag);
+        magTextView.setText("" + currentAndroidFlavor.getMag() );
+
 
         TextView dateView = (TextView) listItemView.findViewById(R.id.eq_date);
         dateView.setText(currentAndroidFlavor.getDate());
+
 
         TextView timeView = (TextView) listItemView.findViewById(R.id.eq_time);
         timeView.setText(currentAndroidFlavor.getTime());
