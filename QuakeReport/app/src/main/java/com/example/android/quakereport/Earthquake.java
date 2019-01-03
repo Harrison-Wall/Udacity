@@ -44,7 +44,7 @@ public class Earthquake
     public String getTime()
     {
         if( mDate != null )
-            return String.format("%1$tr", mDate);
+            return String.format("%1$tl:%1$tM %1$tp", mDate);
         else
             return "Date Not Set";
     }
