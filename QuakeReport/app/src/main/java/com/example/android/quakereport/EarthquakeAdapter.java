@@ -34,13 +34,19 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake>
         Earthquake currentAndroidFlavor = getItem(position);
 
         TextView locTextView = (TextView) listItemView.findViewById(R.id.eq_loc);
-        TextView distTextView = (TextView) listItemView.findViewById(R.id.eq_loc);
+        TextView distTextView = (TextView) listItemView.findViewById(R.id.eq_dist);
 
-        String locParts[] = currentAndroidFlavor.getLocation().split("of ");
-
-        distTextView.setText(locParts[0]+"OF");
-        locTextView.setText(locParts[1]);
-
+        if( currentAndroidFlavor.getLocation().contains("of") )
+        {
+            String locParts[] = currentAndroidFlavor.getLocation().split("of ");
+            distTextView.setText(locParts[0]+"OF");
+            locTextView.setText(locParts[1]);
+        }
+        else
+        {
+            distTextView.setText("NEAR THE");
+            locTextView.setText(currentAndroidFlavor.getLocation());
+        }
 
         TextView magTextView = (TextView) listItemView.findViewById(R.id.eq_mag);
         magTextView.setText("" + currentAndroidFlavor.getMag() );
