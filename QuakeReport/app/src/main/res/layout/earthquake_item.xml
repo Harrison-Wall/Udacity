@@ -2,21 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" 
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="16dp">
     
     <TextView
         android:id="@+id/eq_mag"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/magnitude_circle"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_marginRight="16dp"
         android:text="0.0"/>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="2">
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/eq_dist"
@@ -35,7 +41,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:layout_marginLeft="8dp"
         android:orientation="vertical">
 
