@@ -15,7 +15,7 @@ public class Earthquake
         mDate = null;
     }
 
-    public Earthquake(String pLocation, double pMag, int pMilli)
+    public Earthquake(String pLocation, double pMag, long pMilli)
     {
         mLocation = pLocation;
         mMag = pMag;
@@ -54,7 +54,7 @@ public class Earthquake
         return;
     }
 
-    public void setDate(int pMilli)
+    public void setDate(long pMilli)
     {
         if( mDate != null )
             mDate.setTime(pMilli);
