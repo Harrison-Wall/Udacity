@@ -23,8 +23,6 @@ import static com.example.android.quakereport.EarthquakeActivity.LOG_TAG;
 
 public final class QueryUtils
 {
-    private static final String USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
-
     /**
      * Create a private constructor because no one should ever create a {@link QueryUtils} object.
      * This class is only meant to hold static variables and methods, which can be accessed
@@ -164,7 +162,7 @@ public final class QueryUtils
      * Return a list of {@link Earthquake} objects that has been built up from
      * parsing a JSON response.
      */
-    public static List<Earthquake> extractEarthquakes(String eqJSON)
+    private static List<Earthquake> extractEarthquakes(String eqJSON)
     {
         if( TextUtils.isEmpty(eqJSON) ) // If no JSON data
             return null;
