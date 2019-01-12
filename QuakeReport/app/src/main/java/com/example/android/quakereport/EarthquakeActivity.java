@@ -36,6 +36,10 @@ public class EarthquakeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
+
+        /***
+         * Move Below to an Async Task
+         */
         // Create a list of earthquake locations.
         ArrayList<Earthquake> earthquakes = QueryUtils.extractEarthquakes();
 
@@ -49,9 +53,11 @@ public class EarthquakeActivity extends AppCompatActivity {
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(adapter);
 
-        earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+            {
                 // Find the current earthquake that was clicked on
                 Earthquake currentEarthquake = adapter.getItem(position);
 
