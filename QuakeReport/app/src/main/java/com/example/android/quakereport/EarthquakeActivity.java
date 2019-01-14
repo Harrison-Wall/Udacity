@@ -16,8 +16,11 @@
 package com.example.android.quakereport;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -52,7 +55,6 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
         emptyView = (TextView) findViewById( R.id.empty_list);
         earthquakeListView.setEmptyView( emptyView );
-
         progBar = (ProgressBar) findViewById(R.id.prog_bar);
 
         // Create a new {@link ArrayAdapter} of earthquakes
@@ -81,13 +83,25 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
             }
         });
 
-        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
-        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-        // because this activity implements the LoaderCallbacks interface).
-        LoaderManager lManager = getLoaderManager();
-        lManager.initLoader(1, null, this);
-        Log.d(LOG_TAG, "Loader Initialized in manager");
+        // Check for internet connectivity
+        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
+        if( !isConnected )
+        {
+            emptyView.setText("No Internet Connectivity");
+            progBar.setVisibility(View.GONE);
+        }
+        else
+        {
+            // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+            // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+            // because this activity implements the LoaderCallbacks interface).
+            LoaderManager lManager = getLoaderManager();
+            lManager.initLoader(1, null, this);
+            Log.d(LOG_TAG, "Loader Initialized in manager");
+        }
     }
 
     /**
