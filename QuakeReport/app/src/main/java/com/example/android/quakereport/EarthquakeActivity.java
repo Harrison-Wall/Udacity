@@ -15,9 +15,10 @@
  */
 package com.example.android.quakereport;
 
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -27,11 +28,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity {
-
-    public static final String LOG_TAG = EarthquakeActivity.class.getName();
-    private static final String USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
+public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Earthquake>>
+{
     private EarthquakeAdapter mAdapter;
+    public static final String LOG_TAG = EarthquakeActivity.class.getName();
+    private static final String USGS_URL =
+            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -68,38 +70,43 @@ public class EarthquakeActivity extends AppCompatActivity {
             }
         });
 
-        // Start AsyncTask
-        EarthquakeAsyncTask eqAT = new EarthquakeAsyncTask();
-        eqAT.execute(USGS_URL);
-
+        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+        // because this activity implements the LoaderCallbacks interface).
+        LoaderManager lManager = getLoaderManager();
+        lManager.initLoader(1, null, this);
+        
     }
 
-    private class EarthquakeAsyncTask extends AsyncTask <String, Void, List<Earthquake>>
+    /**
+     * Loader Callback Methods
+     */
+    @Override
+    public Loader<List<Earthquake>> onCreateLoader(int i, Bundle bundle)
     {
-        @Override
-        protected List<Earthquake> doInBackground(String... urls)
+        // Create a loader for the given URL
+        return  new EarthquakeLoader(this, USGS_URL);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes)
+    {
+        // Update the UI with the result
+        mAdapter.clear(); // Clear previous data
+
+        // Add any earthquake data to the adapter
+        if( earthquakes != null && !earthquakes.isEmpty() )
         {
-
-            if( urls.length < 1 || urls[0] == null ) // Check for params
-            {
-                return null;
-            }
-
-            List<Earthquake> retList = QueryUtils.FetchData(urls[0]);
-
-            return retList;
+            mAdapter.addAll(earthquakes);
         }
+        return;
+    }
 
-        @Override
-        protected void onPostExecute(List<Earthquake> pEquakeList)
-        {
-            mAdapter.clear(); // Clear previous data
-
-            // Add any earthquake data to the adapter
-            if( pEquakeList != null && !pEquakeList.isEmpty() )
-            {
-                mAdapter.addAll(pEquakeList);
-            }
-        }
+    @Override
+    public void onLoaderReset(Loader<List<Earthquake>> loader)
+    {
+        // Clear existing data in the loader
+        mAdapter.clear();
+        return;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.android.quakereport;
 
-import android.renderscript.ScriptGroup;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -78,7 +77,6 @@ public final class QueryUtils
     private static String makeHTTPReq(URL url) throws IOException
     {
         String jResponse = "";
-
 
         if( url == null ) // If no URL return empty
         {
