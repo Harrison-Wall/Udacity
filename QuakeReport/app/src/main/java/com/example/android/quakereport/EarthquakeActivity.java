@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -36,6 +37,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 {
     private EarthquakeAdapter mAdapter;
     private TextView emptyView;
+    private ProgressBar progBar;
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
     private static final String USGS_URL =
             "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
@@ -50,6 +52,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
         emptyView = (TextView) findViewById( R.id.empty_list);
         earthquakeListView.setEmptyView( emptyView );
+
+        progBar = (ProgressBar) findViewById(R.id.prog_bar);
 
         // Create a new {@link ArrayAdapter} of earthquakes
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
@@ -100,6 +104,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes)
     {
         // Update the UI with the result
+        progBar.setVisibility(View.GONE);
         emptyView.setText("No Earthquakes Reported");
 
         mAdapter.clear(); // Clear previous data
