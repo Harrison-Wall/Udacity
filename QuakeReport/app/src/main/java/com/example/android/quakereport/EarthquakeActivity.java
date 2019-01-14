@@ -21,9 +21,13 @@ import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ import java.util.List;
 public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Earthquake>>
 {
     private EarthquakeAdapter mAdapter;
+    private TextView emptyView;
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
     private static final String USGS_URL =
             "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
@@ -43,6 +48,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
+        emptyView = (TextView) findViewById( R.id.empty_list);
+        earthquakeListView.setEmptyView( emptyView );
 
         // Create a new {@link ArrayAdapter} of earthquakes
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
@@ -75,7 +82,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // because this activity implements the LoaderCallbacks interface).
         LoaderManager lManager = getLoaderManager();
         lManager.initLoader(1, null, this);
-        
+        Log.d(LOG_TAG, "Loader Initialized in manager");
+
     }
 
     /**
@@ -92,6 +100,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes)
     {
         // Update the UI with the result
+        emptyView.setText("No Earthquakes Reported");
+
         mAdapter.clear(); // Clear previous data
 
         // Add any earthquake data to the adapter
@@ -99,6 +109,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         {
             mAdapter.addAll(earthquakes);
         }
+
         return;
     }
 
@@ -107,6 +118,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     {
         // Clear existing data in the loader
         mAdapter.clear();
+
         return;
     }
 }
