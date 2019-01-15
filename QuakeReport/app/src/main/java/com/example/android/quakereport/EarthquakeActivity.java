@@ -90,7 +90,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
         if( !isConnected )
         {
-            emptyView.setText("No Internet Connectivity");
+            emptyView.setText(R.string.no_connect);
             progBar.setVisibility(View.GONE);
         }
         else
@@ -119,7 +119,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     {
         // Update the UI with the result
         progBar.setVisibility(View.GONE);
-        emptyView.setText("No Earthquakes Reported");
+        emptyView.setText(R.string.no_quakes);
 
         mAdapter.clear(); // Clear previous data
 
