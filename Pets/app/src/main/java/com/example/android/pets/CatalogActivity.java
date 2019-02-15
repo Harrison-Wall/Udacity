@@ -95,6 +95,7 @@ public class CatalogActivity extends AppCompatActivity
         }
     }
 
+    // Hardcoded - for debugging only
     private void insertPet()
     {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
@@ -108,8 +109,6 @@ public class CatalogActivity extends AppCompatActivity
         long newRowID = db.insert(PetEntry.TABLE_NAME, null, values);
 
         Log.v("insertPet()", ": New Row # - "+newRowID);
-
-        displayDatabaseInfo();
     }
 
     @Override
