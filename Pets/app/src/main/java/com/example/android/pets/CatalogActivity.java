@@ -19,6 +19,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.android.pets.Data.PetContract;
 import com.example.android.pets.Data.PetDbHelper;
 import com.example.android.pets.Data.PetContract.PetEntry;
 
@@ -63,12 +65,11 @@ public class CatalogActivity extends AppCompatActivity
 
     private void displayDatabaseInfo()
     {
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
         String projection[] = {PetEntry._ID, PetEntry.COLUMN_PET_NAME, PetEntry.COLUMN_PET_BREED, PetEntry.COLUMN_PET_GENDER, PetEntry.COLUMN_PET_WEIGHT};
 
         // get a Cursor that contains all rows from the pets table.
-        Cursor cursor = db.query(PetEntry.TABLE_NAME, projection, null, null, null, null, null);
+
+        Cursor cursor = getContentResolver().query(PetContract.CONTENT_URI, projection, null, null, null);
 
         // Add pets to the TextView
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
@@ -106,10 +107,8 @@ public class CatalogActivity extends AppCompatActivity
         values.put(PetEntry.COLUMN_PET_GENDER, PetEntry.GENDER_MALE);
         values.put(PetEntry.COLUMN_PET_WEIGHT, 7);
 
-        long newRowID = db.insert(PetEntry.TABLE_NAME, null, values);
-
-        Log.v("insertPet()", ": New Row # - "+newRowID);
-    }
+        Uri newUri = getContentResolver().insert(PetContract.CONTENT_URI, values);
+}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

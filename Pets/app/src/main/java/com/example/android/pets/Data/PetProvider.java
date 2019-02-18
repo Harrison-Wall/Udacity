@@ -1,17 +1,22 @@
 package com.example.android.pets.Data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
+
+import static com.example.android.pets.Data.PetDbHelper.LOG_TAG;
 
 public class PetProvider extends ContentProvider
 {
     // Gives access to pets database
     private PetDbHelper mHelper;
 
-    // static intgers for URI matches
+    // static integers for URI matches
     private static final int PETS = 100;
     private static final int PET_ID = 101;
 
@@ -36,7 +41,31 @@ public class PetProvider extends ContentProvider
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
     {
-        return null;
+        SQLiteDatabase petDB = mHelper.getReadableDatabase();
+
+        Cursor cursor = null;
+
+        int match = sUriMatcher.match(uri);
+        switch(match)
+        {
+            case PETS:
+            {
+                cursor = petDB.query(PetContract.PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            }
+            case PET_ID:
+            {
+                selection = PET_ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+
+                cursor = petDB.query(PetContract.PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("Cannot Query: Unknown Uri: " + uri);
+        }
+
+        return cursor;
     }
 
     // Return the MIME type of the URI content
@@ -46,11 +75,37 @@ public class PetProvider extends ContentProvider
         return null;
     }
 
-    // Insert new ContentValues into the URI
+    // Insert new ContentValues into the database at the URI
     @Override
     public Uri insert(Uri uri, ContentValues cvalues)
     {
-        return null;
+        final int match = sUriMatcher.match(uri);
+
+        switch(match)
+        {
+            case PETS:
+                return insertPet(uri, cvalues);
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for: " + uri);
+
+        }
+    }
+
+    // Helper Method for inserting Pets specifically, database may contain more than just pets
+    private Uri insertPet(Uri uri, ContentValues cvalues)
+    {
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+
+        long id = database.insert(PetContract.PetEntry.TABLE_NAME, null, cvalues);
+
+        if(id == -1)
+        {
+            Log.e(LOG_TAG, "Failed to insert new row for: " + uri);
+            return null;
+        }
+
+        // Return the uri with the id of the new row
+        return ContentUris.withAppendedId(uri, id);
     }
 
     // Delete data from the URI matching the selection and selectionArgs
