@@ -28,5 +28,19 @@ public final class PetContract
         public static final int GENDER_UNKNOWN = 0;
         public static final int GENDER_MALE    = 1;
         public static final int GENDER_FEMALE  = 2;
+
+        public static boolean isValidGender(int mGender)
+        {
+            switch (mGender)
+            {
+                case GENDER_MALE:
+                case GENDER_FEMALE:
+                case GENDER_UNKNOWN:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
     }
 }

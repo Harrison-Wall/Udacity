@@ -94,6 +94,26 @@ public class PetProvider extends ContentProvider
     // Helper Method for inserting Pets specifically, database may contain more than just pets
     private Uri insertPet(Uri uri, ContentValues cvalues)
     {
+        // Data Validation
+        String name = cvalues.getAsString(PetContract.PetEntry.COLUMN_PET_NAME);
+        if(name == null) // Name cannot be null
+        {
+            throw new IllegalArgumentException("Pet requires a name");
+        }
+
+        Integer gender = cvalues.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);
+        if(gender == null || !PetContract.PetEntry.isValidGender(gender)) // Gender must be one of available options
+        {
+            throw new IllegalArgumentException("Pet requiers a valid gender");
+        }
+
+        Integer weight = cvalues.getAsInteger(PetContract.PetEntry.COLUMN_PET_WEIGHT);
+        if(weight != null && weight <= 0 )   // Can be null, if not must be > 0
+        {
+            throw new IllegalArgumentException("Pet requiers a valid weight");
+        }
+
+
         SQLiteDatabase database = mHelper.getWritableDatabase();
 
         long id = database.insert(PetContract.PetEntry.TABLE_NAME, null, cvalues);
