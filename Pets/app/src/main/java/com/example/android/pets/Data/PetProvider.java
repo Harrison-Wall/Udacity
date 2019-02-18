@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.android.pets.Data.PetContract.PetEntry;
 import static com.example.android.pets.Data.PetDbHelper.LOG_TAG;
 
 public class PetProvider extends ContentProvider
@@ -50,7 +51,7 @@ public class PetProvider extends ContentProvider
         {
             case PETS:
             {
-                cursor = petDB.query(PetContract.PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = petDB.query(PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
             case PET_ID:
@@ -58,7 +59,7 @@ public class PetProvider extends ContentProvider
                 selection = PET_ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
 
-                cursor = petDB.query(PetContract.PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = petDB.query(PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
             default:
@@ -95,19 +96,19 @@ public class PetProvider extends ContentProvider
     private Uri insertPet(Uri uri, ContentValues cvalues)
     {
         // Data Validation
-        String name = cvalues.getAsString(PetContract.PetEntry.COLUMN_PET_NAME);
+        String name = cvalues.getAsString(PetEntry.COLUMN_PET_NAME);
         if(name == null) // Name cannot be null
         {
             throw new IllegalArgumentException("Pet requires a name");
         }
 
-        Integer gender = cvalues.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);
-        if(gender == null || !PetContract.PetEntry.isValidGender(gender)) // Gender must be one of available options
+        Integer gender = cvalues.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+        if(gender == null || !PetEntry.isValidGender(gender)) // Gender must be one of available options
         {
             throw new IllegalArgumentException("Pet requiers a valid gender");
         }
 
-        Integer weight = cvalues.getAsInteger(PetContract.PetEntry.COLUMN_PET_WEIGHT);
+        Integer weight = cvalues.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
         if(weight != null && weight <= 0 )   // Can be null, if not must be > 0
         {
             throw new IllegalArgumentException("Pet requiers a valid weight");
@@ -116,7 +117,7 @@ public class PetProvider extends ContentProvider
 
         SQLiteDatabase database = mHelper.getWritableDatabase();
 
-        long id = database.insert(PetContract.PetEntry.TABLE_NAME, null, cvalues);
+        long id = database.insert(PetEntry.TABLE_NAME, null, cvalues);
 
         if(id == -1)
         {
@@ -139,6 +140,59 @@ public class PetProvider extends ContentProvider
     @Override
     public int update(Uri uri, ContentValues cvalues, String selection, String[] selectionArgs)
     {
-        return 0;
+        final int match = sUriMatcher.match(uri);
+
+        switch (match)
+        {
+            case PETS:
+                return updatePet(uri, cvalues, selection, selectionArgs);
+            case PET_ID:
+                // Extract ID from URI so we can operate only on that ID
+                selection = PetContract.PetEntry._ID+"=?";
+                selectionArgs = new String[] { String.valueOf( ContentUris.parseId(uri) ) };
+                return updatePet(uri, cvalues, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Cannot Update, unkown Uri: " + uri);
+        }
+    }
+
+    // Helper method to update a Pet
+    private int updatePet(Uri uri, ContentValues cvalues, String selection, String[] selectionArgs)
+    {
+        // Data Validation
+        if( cvalues.containsKey(PetEntry.COLUMN_PET_NAME) ) // May not be updating fields
+        {
+            String name = cvalues.getAsString(PetEntry.COLUMN_PET_NAME);
+            if(name == null) // Name cannot be null
+            {
+                throw new IllegalArgumentException("Pet requires a name");
+            }
+        }
+        if( cvalues.containsKey(PetEntry.COLUMN_PET_GENDER) )
+        {
+            Integer gender = cvalues.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+            if(gender == null || !PetEntry.isValidGender(gender)) // Gender must be one of available options
+            {
+                throw new IllegalArgumentException("Pet requiers a valid gender");
+            }
+        }
+        if( cvalues.containsKey(PetEntry.COLUMN_PET_WEIGHT) )
+        {
+            Integer weight = cvalues.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+            if(weight != null && weight <= 0 )   // Can be null, if not must be > 0
+            {
+                throw new IllegalArgumentException("Pet requiers a valid weight");
+            }
+        }
+        if( cvalues.size() == 0 ) // No Values, don't update
+        {
+            return 0;
+        }
+
+        SQLiteDatabase databse = mHelper.getWritableDatabase();
+
+        // Update the selected Pet(s) with the given values and return the number of rows updated
+
+        return databse.update(PetEntry.TABLE_NAME, cvalues, selection, selectionArgs);
     }
 }

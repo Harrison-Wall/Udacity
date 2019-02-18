@@ -148,7 +148,7 @@ public class EditorActivity extends AppCompatActivity
         values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
 
-        Uri newUri = getContentResolver().insert(PetContract.CONTENT_URI, values);
+        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
 
         if(newUri == null)
         {

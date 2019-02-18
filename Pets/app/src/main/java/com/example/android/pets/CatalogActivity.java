@@ -69,7 +69,7 @@ public class CatalogActivity extends AppCompatActivity
 
         // get a Cursor that contains all rows from the pets table.
 
-        Cursor cursor = getContentResolver().query(PetContract.CONTENT_URI, projection, null, null, null);
+        Cursor cursor = getContentResolver().query(PetEntry.CONTENT_URI, projection, null, null, null);
 
         // Add pets to the TextView
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
@@ -107,7 +107,7 @@ public class CatalogActivity extends AppCompatActivity
         values.put(PetEntry.COLUMN_PET_GENDER, PetEntry.GENDER_MALE);
         values.put(PetEntry.COLUMN_PET_WEIGHT, 7);
 
-        Uri newUri = getContentResolver().insert(PetContract.CONTENT_URI, values);
+        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
 }
 
     @Override
