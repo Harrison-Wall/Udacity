@@ -105,13 +105,13 @@ public class PetProvider extends ContentProvider
         Integer gender = cvalues.getAsInteger(PetEntry.COLUMN_PET_GENDER);
         if(gender == null || !PetEntry.isValidGender(gender)) // Gender must be one of available options
         {
-            throw new IllegalArgumentException("Pet requiers a valid gender");
+            throw new IllegalArgumentException("Pet requires a valid gender");
         }
 
         Integer weight = cvalues.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
         if(weight != null && weight <= 0 )   // Can be null, if not must be > 0
         {
-            throw new IllegalArgumentException("Pet requiers a valid weight");
+            throw new IllegalArgumentException("Pet requires a valid weight");
         }
 
 
@@ -133,7 +133,20 @@ public class PetProvider extends ContentProvider
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs)
     {
-        return 0;
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch(match)
+        {
+            case PETS:
+                return database.delete(PetEntry.TABLE_NAME, selection, selectionArgs);
+            case PET_ID:
+                selection = PetEntry._ID+"=?";
+                selectionArgs = new String[] { String.valueOf( ContentUris.parseId(uri) ) };
+                return database.delete(PetEntry.TABLE_NAME, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Deletion not suppoerted for Uri: " + uri);
+        }
     }
 
     // Update the data in the URI at the selection with new ContentValues
@@ -148,11 +161,11 @@ public class PetProvider extends ContentProvider
                 return updatePet(uri, cvalues, selection, selectionArgs);
             case PET_ID:
                 // Extract ID from URI so we can operate only on that ID
-                selection = PetContract.PetEntry._ID+"=?";
+                selection = PetEntry._ID+"=?";
                 selectionArgs = new String[] { String.valueOf( ContentUris.parseId(uri) ) };
                 return updatePet(uri, cvalues, selection, selectionArgs);
             default:
-                throw new IllegalArgumentException("Cannot Update, unkown Uri: " + uri);
+                throw new IllegalArgumentException("Cannot Update, unknown Uri: " + uri);
         }
     }
 
@@ -173,7 +186,7 @@ public class PetProvider extends ContentProvider
             Integer gender = cvalues.getAsInteger(PetEntry.COLUMN_PET_GENDER);
             if(gender == null || !PetEntry.isValidGender(gender)) // Gender must be one of available options
             {
-                throw new IllegalArgumentException("Pet requiers a valid gender");
+                throw new IllegalArgumentException("Pet requires a valid gender");
             }
         }
         if( cvalues.containsKey(PetEntry.COLUMN_PET_WEIGHT) )
@@ -181,7 +194,7 @@ public class PetProvider extends ContentProvider
             Integer weight = cvalues.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
             if(weight != null && weight <= 0 )   // Can be null, if not must be > 0
             {
-                throw new IllegalArgumentException("Pet requiers a valid weight");
+                throw new IllegalArgumentException("Pet requires a valid weight");
             }
         }
         if( cvalues.size() == 0 ) // No Values, don't update
